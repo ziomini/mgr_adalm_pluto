@@ -2,7 +2,7 @@ import numpy as np
 import adi
 import matplotlib.pyplot as plt
 
-sample_rate = 2e6 # Hz
+sample_rate = 5e7 # Hz
 center_freq = 24e8 # Hz 2.4GHz
 num_samps = 10000 # number of samples per call to rx()
 
@@ -54,7 +54,7 @@ sdr.tx_cyclic_buffer = True # Enable cyclic buffers
 sdr.tx(tx_samples) # start transmitting
 
 # Clear buffer just to be safe
-for i in range (0, 10):
+for i in range (0, 30):
     raw_data = sdr.rx()
 
 # Receive samples

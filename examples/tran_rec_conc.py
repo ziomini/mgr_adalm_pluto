@@ -2,7 +2,7 @@ import numpy as np
 import adi
 import matplotlib.pyplot as plt
 
-sample_rate = 5e7 # Hz
+sample_rate = 50e6 # MHz
 center_freq = 24e8 # Hz 2.4GHz
 num_samps = 10000 # number of samples per call to rx()
 
@@ -17,7 +17,7 @@ sdr.tx_hardwaregain_chan0 = 0 # Increase to increase tx power, valid range is -9
 # Config Rx
 sdr.rx_lo = int(center_freq)
 sdr.rx_rf_bandwidth = int(sample_rate)
-sdr.rx_buffer_size = num_samps
+sdr.rx_buffer_size = num_samps*10
 sdr.gain_control_mode_chan0 = 'manual'
 sdr.rx_hardwaregain_chan0 = 0.0 # dB, increase to increase the receive gain, but be careful not to saturate the ADC
 
@@ -54,7 +54,7 @@ sdr.tx_cyclic_buffer = True # Enable cyclic buffers
 sdr.tx(tx_samples) # start transmitting
 
 # Clear buffer just to be safe
-for i in range (0, 30):
+for i in range (0, 1):
     raw_data = sdr.rx()
 
 # Receive samples
@@ -62,7 +62,7 @@ total_samples = []
 fmcw_samples = []
 fmcw_current_sample = []
 total_samples = np.asarray(total_samples)
-for i in range(0,10):
+for i in range(0,1):
     rx_samples = sdr.rx()
     total_samples = np.concatenate((total_samples, rx_samples))
     # fmcw_current_sample = np.multiply(tx_samples, rx_samples)
@@ -80,10 +80,6 @@ psd_dB = 10*np.log10(psd)
 f = np.linspace(sample_rate/-2, sample_rate/2, len(psd))
 
 # Plot time domain
-plt.figure(0)
-plt.plot(np.real(total_samples))
-plt.plot(np.imag(total_samples))
-plt.xlabel("Time")
 
 # Plot freq domain
 plt.figure(1)
@@ -91,7 +87,18 @@ plt.plot(f/2e6, psd_dB)
 plt.xlabel("Frequency [MHz]")
 plt.ylabel("PSD")
 
-plt.figure(5)
+plt.figure(2)
 NFFT = 1024
 plt.specgram(fmcw_samples, NFFT=NFFT, Fs=sample_rate, noverlap=900)
 plt.show()
+
+fmcw_sig = tx_samples
+for i in range(0,4):
+    fmcw_sig = np.concatenate((fmcw_sig, tx_samples))
+
+plt.figure(3)
+sig_fmcw = np.multiply(fmcw_sig, fmcw_samples) 
+spec = np.abs(np.fft.fftshift(np.fft.fft(sig_fmcw)))
+plt.plot(f/2e6, 10*np.log10(spec))
+plt.title("After multi")
+plt.xlabel("Freq [MHz]")

@@ -1,7 +1,8 @@
+from termios import FF1
 import numpy as np
 import adi
 import matplotlib.pyplot as plt
-
+from scipy.signal import find_peaks
 
 def calculate_spec(samples, db_scale = True):
     spec = np.abs(np.fft.fftshift(np.fft.fft(samples)))
@@ -9,6 +10,42 @@ def calculate_spec(samples, db_scale = True):
         return np.log10(spec)
     else:
         return spec
+
+c = 3e8
+f1_norm = (1e3)/50e6
+f2_norm = (2.5e5)/50e6
+dfdt = (2.5e5-1e3)/(10000*20e-9)
+# dfdt = (f2_norm-f1_norm)/
+
+def plot_norm_spec(samples, fig_num = 1, title = None):
+    x_axis = np.linspace(-0.5, 0.5, len(samples))
+    plt.figure(fig_num)
+    plt.plot(x_axis, samples)
+    if title is not None:
+        plt.title(title)
+    peaks = find_peaks(samples)[0]
+    print( peaks)
+    peaks_values = samples[peaks]
+    # ind= np.argpartition(samples,-4)[-4:]
+    # y_top = samples[ind]
+    ind= np.argpartition(peaks_values,-4)[-4:]
+    y_top = peaks_values[ind]
+    ind  = peaks[ind]
+    # ind = peaks
+    # print(ind)
+    for i,j in zip(x_axis[ind],y_top):
+        print("%s and %s" % (i, j))
+        plt.text(i, j, '({}, {})'.format(i, j))
+    ind = np.sort(ind)
+    plt.text(0, 5, 'diff %s' % (x_axis[ind[1]] - x_axis[ind[0]] ))
+    plt.text(0, 5.2, 'diff %s' % (x_axis[ind[2]] - x_axis[ind[3]] ))
+    diff = (x_axis[ind[1]] - x_axis[ind[0]] )
+    diff = diff*50e6
+    diff_dist = (c * abs(diff))/(2*dfdt)
+    print('%s * %s / 2 * %s' % (c, diff, dfdt))
+    print('dist: %s' % diff_dist)
+    plt.show()
+
 
 sample_rate = 50e6 # MHz
 center_freq = 2.45e9 # Hz 2.45GHz
@@ -35,6 +72,7 @@ N = int(num_samps)
 print("N: %s" % N)
 t = np.arange(N)/sample_rate
 f = np.linspace(start=1e3, stop=(2.5e5), num=N)
+print(f)
 # f = np.arange(start=1e3, stop=(25e2+ 1e3), step=25)
 print(len(t))
 print(len(f))
@@ -86,8 +124,7 @@ fmcw_samples = np.multiply(fmcw_samples, np.max(total_samples))
 
 plt.figure(2)
 fmcw_result_samples = np.multiply(total_samples, fmcw_samples)
-plt.title("FMCW result spec")
-plt.plot(f/2e6, calculate_spec(fmcw_result_samples))
+plot_norm_spec(calculate_spec(fmcw_result_samples), 2, "FMCW Result")
 
 plt.figure(3)
 plt.title("Recived signal spec")

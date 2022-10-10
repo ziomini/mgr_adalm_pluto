@@ -13,8 +13,8 @@ def calculate_spec(samples, db_scale = True):
 
 c = 3e8
 f1_norm = (1e3)/50e6
-f2_norm = (2.5e5)/50e6
-dfdt = (2.5e5-1e3)/(10000*20e-9)
+f2_norm = (2.5e7)/50e6
+dfdt = (2.5e7-1e3)/(10000000*20e-9)
 # dfdt = (f2_norm-f1_norm)/
 
 def plot_norm_spec(samples, fig_num = 1, title = None):
@@ -48,8 +48,8 @@ def plot_norm_spec(samples, fig_num = 1, title = None):
 
 
 sample_rate = 50e6 # MHz
-center_freq = 2.45e9 # Hz 2.45GHz
-num_samps = 10000 # number of samples per call to rx()
+center_freq = 2.40e9 # Hz 2.45GHz
+num_samps = 10000000 # number of samples per call to rx()
 singal_real = True
 
 sdr = adi.Pluto("ip:192.168.2.1")
@@ -71,7 +71,7 @@ sdr.rx_hardwaregain_chan0 = 0.0 # dB, increase to increase the receive gain, but
 N = int(num_samps)
 print("N: %s" % N)
 t = np.arange(N)/sample_rate
-f = np.linspace(start=1e3, stop=(2.5e5), num=N)
+f = np.linspace(start=1e3, stop=(2.5e7), num=N)
 print(f)
 # f = np.arange(start=1e3, stop=(25e2+ 1e3), step=25)
 print(len(t))

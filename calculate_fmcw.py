@@ -3,6 +3,7 @@ import numpy as np
 import adi
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
+import sys
 
 
 def calculate_spec(samples, db_scale=True):
@@ -31,7 +32,9 @@ dfdt = (f2-f1)/(num_samps * (1/sample_rate))
 
 singal_real = True
 save_variables = False
-plot_fmcw_spec = True
+plot_fmcw_spec = False
+save_result_to_output_file = True
+output_filename = "out.txt"
 
 
 ##################
@@ -80,6 +83,13 @@ def calculate_fmcw(samples_spec):
     if save_variables:
         print('%s * %s / 2 * %s' % (c, diff, dfdt))
     print('dist: %s' % diff_dist)
+
+    if save_result_to_output_file:
+        file = open(output_filename, 'a')
+        exp_name = 'none'
+        if len(sys.argv) > 1:
+            exp_name = sys.argv[1]
+        file.write("real distance: %s\tradar distance\n: %s" % (exp_name, diff_dist))
 
 
 #########

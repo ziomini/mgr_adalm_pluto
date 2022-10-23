@@ -34,6 +34,7 @@ singal_real = True
 save_variables = False
 plot_fmcw_spec = False
 save_result_to_output_file = True
+secondary_diff = True
 output_filename = "out.txt"
 
 
@@ -90,6 +91,23 @@ def calculate_fmcw(samples_spec):
         if len(sys.argv) > 1:
             exp_name = sys.argv[1]
         file.write("real distance: %s\tradar distance\n: %s" % (exp_name, diff_dist))
+
+    if secondary_diff:
+        x_axis = np.linspace(-0.5, 0.5, len(samples_spec))
+        peaks = find_peaks(samples_spec)[0]
+        peaks_values = samples_spec[peaks]
+        peak_indexes = np.argpartition(peaks_values, -6)[-6:]  # pick top 6 peaks
+        peak_indexes = peaks[peak_indexes]
+
+        # for i, j in zip(x_axis[peak_indexes], peaks_values[peak_indexes]):
+        #     if save_variables:
+        #         print("%s and %s" % (i, j))
+        peak_indexes = np.sort(peak_indexes)
+        diff = (x_axis[peak_indexes[2]] - x_axis[peak_indexes[0]])
+        diff = diff*sample_rate
+        diff_dist = (c * abs(diff))/(2*dfdt)
+        print('secondary dist: %s' % diff_dist)
+        
 
 
 #########

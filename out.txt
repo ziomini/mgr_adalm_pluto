@@ -1,0 +1,20 @@
+real distance: 5m	radar distance
+: 13005.518349273834real distance: 5m	radar distance
+: 30.1311005204027real distance: 5m	radar distance
+: 12.052440208161048real distance: 5m	radar distance
+: 24.104880416322178real distance: street	radar distance
+: 12.052440208161048real distance: 10m	radar distance
+: 18.078660312241656real distance: 2m	radar distance
+: 12.052440208161048real distance: 14m	radar distance
+: 12.052440208161132real distance: 16m	radar distance
+: 12.052440208161048real distance: 20m	radar distance
+: 12.052440208161132real distance: 25m	radar distance
+: 18.078660312241567real distance: 25m	radar distance
+: 18.078660312241656real distance: 12m	radar distance
+: 18.078660312241656real distance: 10m	radar distance
+: 12.052440208161132real distance: 15m	radar distance
+: 18.078660312241656real distance: 20m	radar distance
+: 18.078660312241656real distance: 25m	radar distance
+: 24.104880416322178real distance: nothing	radar distance
+: 18.078660312241656real distance: nothing2	radar distance
+: 18.078660312241656

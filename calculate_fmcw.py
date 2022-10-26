@@ -61,7 +61,7 @@ def plot_norm_spec(samples_spec_in, fig_num=1, title=None):
         plt.title(title)
     peaks = find_peaks(samples_spec)[0]
     peaks_values = samples_spec[peaks]
-    ind = np.argpartition(peaks_values, -4)[-4:]
+    ind = np.argpartition(peaks_values, -2)[-2:]
     y_top = peaks_values[ind]
     ind = peaks[ind]
     for i, j in zip(x_axis[ind], y_top):
@@ -69,7 +69,7 @@ def plot_norm_spec(samples_spec_in, fig_num=1, title=None):
         plt.text(i, j, '({}, {})'.format(i, j))
     ind = np.sort(ind)
     plt.text(0, 5, 'diff %s' % (x_axis[ind[1]] - x_axis[ind[0]]))
-    plt.text(0, 5.2, 'diff %s' % (x_axis[ind[2]] - x_axis[ind[3]]))
+    # plt.text(0, 5.2, 'diff %s' % (x_axis[ind[2]] - x_axis[ind[0]]))
     diff = (x_axis[ind[1]] - x_axis[ind[0]])
     diff = (diff*sample_rate)/N
     diff_dist = (c * abs(diff))/(2*dfdt)
@@ -91,7 +91,7 @@ def calculate_fmcw(samples_spec_in):
     peaks = find_peaks(samples_spec)[0]
 
     peaks_values = samples_spec[peaks]
-    peak_indexes = np.argpartition(peaks_values, -4)[-4:]  # pick top 4 peaks
+    peak_indexes = np.argpartition(peaks_values, -2)[-2:]  # pick top 2 peaks
     peak_indexes = peaks[peak_indexes]
 
     # for i, j in zip(x_axis[peak_indexes], peaks_values[peak_indexes]):
@@ -116,7 +116,7 @@ def calculate_fmcw(samples_spec_in):
         x_axis = np.linspace(-0.5, 0.5, len(samples_spec))
         peaks = find_peaks(samples_spec)[0]
         peaks_values = samples_spec[peaks]
-        peak_indexes = np.argpartition(peaks_values, -6)[-6:]  # pick top 6 peaks
+        peak_indexes = np.argpartition(peaks_values, -3)[-3:]  # pick top 6 peaks
         peak_indexes = peaks[peak_indexes]
 
         # for i, j in zip(x_axis[peak_indexes], peaks_values[peak_indexes]):

@@ -32,10 +32,11 @@ dfdt = (f2-f1)/(num_samps * (1/sample_rate))
 
 singal_real = True
 save_variables = False
-plot_fmcw_spec = False
+plot_fmcw_spec = True
 save_result_to_output_file = True
 secondary_diff = True
 output_filename = "out.txt"
+window_len = 100
 
 
 ##################
@@ -43,8 +44,17 @@ output_filename = "out.txt"
 ##################
 
 
-def plot_norm_spec(samples_spec, fig_num=1, title=None):
-    x_axis = np.linspace(-0.5, 0.5, len(samples_spec))
+def plot_norm_spec(samples_spec_in, fig_num=1, title=None):
+    samples_spec = np.copy(samples_spec_in)
+    peaks = find_peaks(samples_spec)[0]
+    index = None
+    index = np.argmax(samples_spec)
+    
+    samples_spec = samples_spec[(index-window_len):(index+window_len)]
+
+
+
+    x_axis = np.linspace(0, len(samples_spec),len(samples_spec))
     plt.figure(fig_num)
     plt.plot(x_axis, samples_spec)
     if title is not None:
@@ -61,15 +71,25 @@ def plot_norm_spec(samples_spec, fig_num=1, title=None):
     plt.text(0, 5, 'diff %s' % (x_axis[ind[1]] - x_axis[ind[0]]))
     plt.text(0, 5.2, 'diff %s' % (x_axis[ind[2]] - x_axis[ind[3]]))
     diff = (x_axis[ind[1]] - x_axis[ind[0]])
-    diff = diff*50e6
+    diff = (diff*sample_rate)/N
     diff_dist = (c * abs(diff))/(2*dfdt)
     plt.text(0, 5.4, 'diff dist %s' % (diff_dist))
     plt.show()
 
 
-def calculate_fmcw(samples_spec):
-    x_axis = np.linspace(-0.5, 0.5, len(samples_spec))
+def calculate_fmcw(samples_spec_in):
+    samples_spec = np.copy(samples_spec_in)
     peaks = find_peaks(samples_spec)[0]
+    index = None
+    index = np.argmax(samples_spec)
+    
+    samples_spec = samples_spec[(index-window_len):(index+window_len)]
+
+    x_axis = np.linspace(0, len(samples_spec),len(samples_spec))
+
+
+    peaks = find_peaks(samples_spec)[0]
+
     peaks_values = samples_spec[peaks]
     peak_indexes = np.argpartition(peaks_values, -4)[-4:]  # pick top 4 peaks
     peak_indexes = peaks[peak_indexes]
@@ -79,7 +99,7 @@ def calculate_fmcw(samples_spec):
     #         print("%s and %s" % (i, j))
     peak_indexes = np.sort(peak_indexes)
     diff = (x_axis[peak_indexes[1]] - x_axis[peak_indexes[0]])
-    diff = diff*sample_rate
+    diff = (diff*sample_rate)/N
     diff_dist = (c * abs(diff))/(2*dfdt)
     if save_variables:
         print('%s * %s / 2 * %s' % (c, diff, dfdt))
@@ -103,8 +123,8 @@ def calculate_fmcw(samples_spec):
         #     if save_variables:
         #         print("%s and %s" % (i, j))
         peak_indexes = np.sort(peak_indexes)
-        diff = (x_axis[peak_indexes[2]] - x_axis[peak_indexes[0]])
-        diff = diff*sample_rate
+        diff = (x_axis[peak_indexes[2]] - x_axis[peak_indexes[1]])
+        diff = (diff*sample_rate)/N
         diff_dist = (c * abs(diff))/(2*dfdt)
         print('secondary dist: %s' % diff_dist)
         
@@ -181,11 +201,11 @@ for i in range(0, 1):
 sdr.tx_destroy_buffer()
 
 
-fmcw_samples = np.multiply(fmcw_samples, np.max(total_samples))
+# fmcw_samples = np.multiply(fmcw_samples, np.max(total_samples))
 
 fmcw_result_samples = np.multiply(total_samples, fmcw_samples)
 
 if plot_fmcw_spec:
     plot_norm_spec(calculate_spec(fmcw_result_samples), 2, "FMCW Result")
 
-calculate_fmcw(calculate_spec(fmcw_samples))
+calculate_fmcw(calculate_spec(fmcw_result_samples))

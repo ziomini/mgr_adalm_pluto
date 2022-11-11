@@ -6,8 +6,14 @@ from scipy.signal import find_peaks
 import sys
 
 
-def calculate_spec(samples, db_scale=True):
-    spec = np.abs(np.fft.fftshift(np.fft.fft(samples)))
+def calculate_spec(samples, db_scale=True, window = 'hamming'):
+    if window == 'hamming':
+        hamming_samples = np.hamming(len(samples))
+        samples = np.multiply(samples, hamming_samples)
+
+    fft_result = np.fft.fftshift(np.fft.fft(samples))
+
+    spec = np.abs(fft_result)
     if db_scale:
         return np.log10(spec)
     else:
@@ -24,13 +30,14 @@ sample_rate = 50e6  # MHz
 center_freq = 2.40e9  # Hz 2.45GHz
 num_samps = 10000000  # number of samples per call to rx()
 f1 = 1e3
-f2 = 25e6
+f2 = 50e6
 f1_norm = (f1)/sample_rate
 f2_norm = (f2)/sample_rate
 dfdt = (f2-f1)/(num_samps * (1/sample_rate))
 
 
-singal_real = True
+singal_real = False
+signal_modified = True
 save_variables = False
 plot_fmcw_spec = True
 save_result_to_output_file = True
@@ -160,12 +167,16 @@ print(f)
 # f = np.arange(start=1e3, stop=(25e2+ 1e3), step=25)
 print(len(t))
 print(len(f))
-if singal_real:
-    tx_samples = 0.5*np.sin(2.0*np.pi*np.multiply(f, t))  # Simulate real chirp
-else:
-    tx_samples = 0.5*np.exp(2.0j*np.pi*np.multiply(f, t)
-                            )  # Simulate complex chirp
 
+### Generate signal
+if signal_modified:
+    if singal_real:
+        tx_samples = 0.5*np.sin(2.0*np.pi*np.multiply(f, t))  # Simulate real chirp
+    else:
+        tx_samples = 0.5*np.exp(2.0j*np.pi*np.multiply(f, t)
+                                )  # Simulate complex chirp
+else:
+    tx_samples = 0.5*np.exp(2.0j*np.pi*np.multiply(f, t)) #TODO
 
 # tx_samples = np.concatenate((tx_samples, np.zeros(N)))
 print(np.min(np.real(tx_samples)), np.max(np.real(tx_samples)))

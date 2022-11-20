@@ -143,7 +143,7 @@ def calculate_fmcw(samples_spec_in):
         exp_name = 'none'
         if len(sys.argv) > 1:
             exp_name = sys.argv[1]
-        file.write("real distance: %s\tradar distance\n: %s" % (exp_name, diff_dist))
+        file.write("real distance: %s\tradar distance\t: %s\n" % (exp_name, diff_dist))
 
     if secondary_diff:
         x_axis = np.linspace(-0.5, 0.5, len(samples_spec))

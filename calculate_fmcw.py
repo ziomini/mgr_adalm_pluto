@@ -5,6 +5,28 @@ import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 import sys
 
+def nlfm_hamming(time_vector, bandwidth, center_freq, Niter = 4):
+    time = np.copy(time_vector)
+    time_diff = np.max(time) - np.min(time)
+    time = np.subtract(time, time_diff)
+    dt = time[2] - time[1]
+    Nt = (np.arange(len(time))+1)/len(time)
+
+    gg  = 0.54 - 0.46 * np.cos(2.0*np.pi*Nt)
+    g0 = 1/gg
+    up_factor = int(np.round(len(g0)/len(time)))
+    print(up_factor)
+    c = np.cumsum(g0[1::up_factor])
+    for i in range(1, Niter):
+        gg  = 0.54 - 0.46 * np.cos(2.0*np.pi*c / c[-1])
+        g1 = 1 / gg
+        c = np.cumsum(g1)
+
+    c = (2 * c / c[-1] -1)
+    phiprim = np.pi * bandwidth * c + 2 * np.pi * center_freq
+    phi = np.cumsum(phiprim * dt)
+    return np.exp(1.0j * phi)
+
 
 def calculate_spec(samples, db_scale=True, window = 'hamming'):
     if window == 'hamming':
@@ -81,7 +103,11 @@ def plot_norm_spec(samples_spec_in, fig_num=1, title=None):
     diff = (diff*sample_rate)/N
     diff_dist = (c * abs(diff))/(2*dfdt)
     plt.text(0, 5.4, 'diff dist %s' % (diff_dist))
-    plt.show()
+    # plt.show()
+    exp_name = 'none'
+    if len(sys.argv) > 1:
+        exp_name = sys.argv[1]
+    plt.savefig('exp_d_%s' % (exp_name))
 
 
 def calculate_fmcw(samples_spec_in):
@@ -176,7 +202,7 @@ if signal_modified:
         tx_samples = 0.5*np.exp(2.0j*np.pi*np.multiply(f, t)
                                 )  # Simulate complex chirp
 else:
-    tx_samples = 0.5*np.exp(2.0j*np.pi*np.multiply(f, t)) #TODO
+    tx_samples = nlfm_hamming(t, sample_rate, 0) #TODO
 
 # tx_samples = np.concatenate((tx_samples, np.zeros(N)))
 print(np.min(np.real(tx_samples)), np.max(np.real(tx_samples)))

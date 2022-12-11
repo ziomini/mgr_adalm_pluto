@@ -1,0 +1,32 @@
+real distance: 5m_window_normal_antena	radar distance
+: 15.065248943169806real distance: 19m	radar distance
+: 18.07829873180376real distance: 10m_normal_antena	radar distance
+: 15.065248943169806real distance: 10m_newant	radar distance
+: 9.0391493659019real distance: 15m_newant	radar distance
+: 21.091348520437755real distance: 5m_newant2	radar distance
+: 9.0391493659019real distance: 9m_newant2	radar distance
+: 9.0391493659019real distance: 5m_newant2	radar distance
+: 9.0391493659019real distance: 15m_newant2	radar distance
+: 21.091348520437755real distance: 20m_newant2	radar distance
+: 6.0260995772679475real distance: 20m_newant2_2	radar distance
+: 9.0391493659019real distance: 5m_window_normal_antena	radar distance	: 15.065248943169806
+real distance: 5m_window_normal_antena_nlfm	radar distance	: 198.86128604984154
+real distance: 9m_window_normal_antena_nlfm	radar distance	: 66.28709534994717
+real distance: 9m_window_normal_antena	radar distance	: 15.065248943169806
+real distance: 12m_window_normal_antena	radar distance	: 18.07829873180376
+real distance: 15m_window_normal_antena	radar distance	: 6.0260995772679475
+real distance: 18m_window_normal_antena	radar distance	: 6.0260995772679475
+real distance: rx_antena_5	radar distance	: 6.0260995772679475
+real distance: rx_antena_9	radar distance	: 18.07829873180376
+real distance: rx_antena_9ddrugi	radar distance	: 12.052199154535854
+real distance: rx_antena_13	radar distance	: 12.052199154535854
+real distance: rx_antena_17	radar distance	: 18.07829873180376
+real distance: rx_antena_20	radar distance	: 12.052199154535854
+real distance: rx_antena_20sddd	radar distance	: 9.0391493659019
+real distance: tx_antena_20	radar distance	: 12.052199154535854
+real distance: tx_antena_20ddd	radar distance	: 9.0391493659019
+real distance: tx_antena_17	radar distance	: 9.0391493659019
+real distance: tx_antena_17ddd	radar distance	: 12.052199154535854
+real distance: tx_antena_14	radar distance	: 12.052199154535854
+real distance: tx_antena_10	radar distance	: 9.0391493659019
+real distance: tx_antena_5	radar distance	: 12.052199154535854
